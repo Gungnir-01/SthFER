@@ -1,0 +1,10 @@
+# Ignore macOS system files
+.DS_Store
+
+# Python virtual environment
+.venv/
+
+# 预处理后的数据集
+FER2013_processed/
+
+Models/Swin_Transformer/best_model.pth
