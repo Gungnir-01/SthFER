@@ -5,6 +5,7 @@
 .venv/
 
 # 预处理后的数据集
+fer2013/
 FER2013_processed/
 
 Models/Swin_Transformer/best_model.pth
