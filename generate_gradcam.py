@@ -7,6 +7,7 @@ import sys
 import math
 from pytorch_grad_cam import GradCAM
 from pytorch_grad_cam.utils.image import show_cam_on_image
+from scipy.ndimage import gaussian_filter
 
 # ---------- 配置 ----------
 MODEL_PATH = "Models/Swin_Transformer/best_model.pth"
@@ -37,7 +38,10 @@ def swin_transformer_reshape_transform(tensor, height=7, width=7):
         return tensor
 
 # ---------- 目标层 ----------
-target_layers = [model.layers[-1].blocks[-1].norm1]
+target_layers = [
+    model.layers[-1].blocks[-1].mlp.fc2,  # 最后一个 MLP，梯度丰富
+    model.norm,                           # 最终全局 LayerNorm，更平滑
+]
 
 # ---------- 读取图片（支持中文） ----------
 if len(sys.argv) > 1:
@@ -71,11 +75,14 @@ cam = GradCAM(model=model,
               reshape_transform=swin_transformer_reshape_transform)
 
 # eigen_smooth=True 可以消除条纹噪声
-grayscale_cam = cam(input_tensor=input_tensor, eigen_smooth=True)
+grayscale_cam = cam(input_tensor=input_tensor, eigen_smooth=True, aug_smooth=True)
 grayscale_cam = grayscale_cam[0, :]   # 取出 (H, W)
 
 # 将 7x7 的热力图平滑放大到原图尺寸
 heatmap_resized = cv2.resize(grayscale_cam, (orig_w, orig_h), interpolation=cv2.INTER_LINEAR)
+# 高斯模糊消除残留竖纹，sigma 根据图片大小自适应
+sigma = max(orig_w, orig_h) / 80.0
+heatmap_resized = gaussian_filter(heatmap_resized, sigma=sigma)
 
 # 叠加原图与热力图
 rgb_img_float = rgb_img / 255.0

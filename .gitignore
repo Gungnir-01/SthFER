@@ -10,4 +10,4 @@ FER2013_processed/
 
 Models/Swin_Transformer/best_model.pth
 
-heatmaps
+heatmaps/
