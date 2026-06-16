@@ -16,6 +16,8 @@ FER2013_processed/
 # 模型权重文件（太大，不适合 git，请用 Google Drive / Git LFS）
 Models/Swin_Transformer/
 Models/CNN/
+Models/ViT_Model/
 
 # 输出目录
 heatmaps/
+heatmap_results/
