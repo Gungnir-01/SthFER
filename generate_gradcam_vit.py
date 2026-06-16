@@ -1,4 +1,5 @@
 import torch
+import torch.nn as nn
 import cv2
 import numpy as np
 import os
@@ -31,9 +32,23 @@ model.load_state_dict(state_dict, strict=False)
 model.to(DEVICE)
 model.eval()
 
+# ---------- Grad-CAM 包装器（提取 CLS token） ----------
+class ViTGradCAMWrapper(nn.Module):
+    """包装 ViT 模型，使输出仅为 CLS token 的 7 类 logits，兼容 Grad-CAM"""
+    def __init__(self, vit_model):
+        super().__init__()
+        self.vit_model = vit_model
+
+    def forward(self, x):
+        out = self.vit_model(x)      # [B, 50, 7]
+        return out[:, 0, :]           # 仅取 CLS token [B, 7]
+
+wrapped_model = ViTGradCAMWrapper(model)
+
 # ---------- Grad-CAM 目标层 ----------
-# ViT 内部有一个 transformer 层，我们取最后一个 transformer encoder block 的 MLP
-target_layers = [model.vit.transformer.layers[-1][0].fn.net[-1]]  # 最后一个 MLP
+# ViT 最后一层 attention 的 to_qkv（QKV 联合投影），
+# 此处 patch token 梯度通过 attention 机制有效流动，热力权重最明显
+target_layers = [model.vit.transformer.layers[-1][0].to_qkv]
 
 
 def vit_reshape_transform(tensor, height=14, width=14):
@@ -76,14 +91,14 @@ input_tensor = torch.from_numpy(rgb_img_resized / 255.0).permute(2, 0, 1).float(
 
 # ---------- 预测 ----------
 with torch.no_grad():
-    outputs = model(input_tensor)
+    outputs = wrapped_model(input_tensor)    # [1, 7]
     _, pred = torch.max(outputs, 1)
     predicted_label = EMOTIONS[pred.item()]
     print(f"预测表情: {predicted_label}")
 
 # ---------- Grad-CAM ----------
 cam = GradCAM(
-    model=model,
+    model=wrapped_model,
     target_layers=target_layers,
     reshape_transform=vit_reshape_transform
 )
