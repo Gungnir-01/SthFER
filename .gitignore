@@ -3,11 +3,19 @@
 
 # Python virtual environment
 .venv/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
 
 # 预处理后的数据集
 fer2013/
 FER2013_processed/
 
-Models/Swin_Transformer/best_model.pth
+# 模型权重文件（太大，不适合 git，请用 Google Drive / Git LFS）
+Models/Swin_Transformer/
+Models/CNN/
 
+# 输出目录
 heatmaps/
