@@ -26,5 +26,12 @@ heatmaps_vit_debug/
 #测试用热力图原图
 images/
 
-#测试TDF
+#测试TDR
+TDR_test/
+
+#TDR结果
 comparison/
+
+
+dusk/
+dusk_result/
