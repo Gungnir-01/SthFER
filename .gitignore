@@ -17,6 +17,7 @@ FER2013_processed/
 Models/Swin_Transformer/
 Models/CNN/
 Models/ViT_Model/
+Models/LANMSFF/
 
 # 输出目录
 heatmaps/
@@ -35,3 +36,12 @@ comparison/
 
 dusk/
 dusk_result/
+
+kita/
+yikuyou/
+
+yukino/
+yushita/
+
+lappland/
+texas/
