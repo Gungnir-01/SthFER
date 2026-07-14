@@ -19,13 +19,14 @@ def train_one_epoch(model, dataloader, optimizer, criterion, device):
         inputs, labels = inputs.to(device), labels.to(device)
         optimizer.zero_grad()
 
-        outputs = model(inputs)
-        loss = criterion(outputs, labels)
+        outputs = model(inputs)                # [B, N, 7]
+        cls_outputs = outputs[:, 0, :]         # 取 CLS token [B, 7]
+        loss = criterion(cls_outputs, labels)
         loss.backward()
         optimizer.step()
 
         running_loss += loss.item() * inputs.size(0)
-        _, preds = torch.max(outputs, 1)
+        _, preds = torch.max(cls_outputs, 1)
         correct += torch.sum(preds == labels.data)
         total += labels.size(0)
 
@@ -43,11 +44,12 @@ def validate_one_epoch(model, dataloader, criterion, device):
     with torch.no_grad():
         for inputs, labels in tqdm(dataloader, desc="Validating"):
             inputs, labels = inputs.to(device), labels.to(device)
-            outputs = model(inputs)
-            loss = criterion(outputs, labels)
+            outputs = model(inputs)                # [B, N, 7]
+            cls_outputs = outputs[:, 0, :]         # 取 CLS token [B, 7]
+            loss = criterion(cls_outputs, labels)
 
             running_loss += loss.item() * inputs.size(0)
-            _, preds = torch.max(outputs, 1)
+            _, preds = torch.max(cls_outputs, 1)
             correct += torch.sum(preds == labels.data)
             total += labels.size(0)
 

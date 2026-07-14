@@ -1,51 +1,90 @@
-# Ignore macOS system files
+# ============================================================
+# 系统文件
+# ============================================================
 .DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
 
-# Python virtual environment
+# ============================================================
+# Python 虚拟环境 & 缓存
+# ============================================================
 .venv/
 venv/
-
-# Python cache
 __pycache__/
 *.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
 
-# 预处理后的数据集
+# ============================================================
+# Jupyter Notebook 缓存
+# ============================================================
+.ipynb_checkpoints/
+
+# ============================================================
+# 数据集（太大，不上传 GitHub）
+# ============================================================
 fer2013/
 FER2013_processed/
 
-# 模型权重文件（太大，不适合 git，请用 Google Drive / Git LFS）
-Models/Swin_Transformer/
-Models/CNN/
-Models/ViT_Model/
-Models/LANMSFF/
+# ============================================================
+# 模型权重文件（.pth 太大，通过 link_download_model.txt 提供下载链接）
+# ============================================================
+*.pth
+*.pt
+*.pth.tar
+*.ckpt
+Models/
+!Models/link_download_model.txt
 
-# 输出目录
+# ============================================================
+# 外部模型库中的权重和实验产物
+# ============================================================
+external/ORSANet-master/checkpoint/
+external/ORSANet-master/models/pretrain/
+external/ORSANet-master/checkpoints/
+external/ORSANet-master/log/
+external/PCNN/experiment/
+
+# ============================================================
+# 个人批处理/实验脚本（硬编码个人测试目录）
+# ============================================================
+batch_gradcam_saki.py
+generate_gradcam_orsanet.py
+generate_all_heatmaps.py
+generate_swin_4stage_heatmap.py
+
+# ============================================================
+# Grad-CAM 热力图输出
+# ============================================================
 heatmaps/
 heatmaps_vit/
 heatmaps_vit_debug/
+heatmaps_lanmsff/
+heatmaps_orsanet/
+heatmaps_pcnn/
 
-#测试用热力图原图
-images/
-
-#测试TDR
+# ============================================================
+# TDR 对比实验产物
+# ============================================================
 TDR_test/
-
-#TDR结果
 comparison/
 
-
+# ============================================================
+# 个人测试图片/输出目录（不影响项目核心功能）
+# ============================================================
 dusk/
 dusk_result/
-
 kita/
 yikuyou/
-
 yukino/
 yushita/
-
 lappland/
 texas/
-
-heatmaps_lanmsff/
-
-heatmaps_pcnn/external/ORSANet-master/checkpoint/
+toyukawa/
+saki/
+images/
